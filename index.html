@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tulip Bouquet</title>
+    <style>
+        :root{
+            --bg:#faf7ff;
+            --ink:#1b1b1f;
+            --accent:#8b5cf6; /* ribbon */
+            --paper:#ffedd5;  /* bouquet wrap */
+            --paper-edge:#fbbf24;
+            --stem:#168a57;
+            --leaf:#1aa368;
+            --tulip1:#ff5c8a;
+            --tulip2:#ff9a5c;
+            --tulip3:#fbc02d;
+            --tulip4:#7c4dff;
+            --tulip5:#26c6da;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            color:var(--ink);
+            background: radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, var(--bg) 60%, #efeaff 100%);
+            display:grid;
+            place-items:center;
+        }
+        .wrap{
+            width: min(900px, 92vw);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:1.25rem;
+            padding:1.25rem 1rem 2rem;
+        }
+        .header{
+            display:flex;
+            align-items:center;
+            gap:.75rem;
+            background:#ffffffcc;
+            backdrop-filter: blur(6px);
+            border:1px solid #e7e2ff;
+            padding:.75rem 1rem;
+            border-radius:14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            width:100%;
+        }
+        .dot{width:.6rem;height:.6rem;border-radius:50%;background:var(--accent);flex:0 0 auto;}
+        .msg{font-weight:600;letter-spacing:.2px}
+        .sub{opacity:.7;font-size:.9rem}
+        .spacer{flex:1}
+        .btn{
+            border:none;background:var(--accent);color:#fff;font-weight:600;
+            padding:.55rem .9rem;border-radius:10px;cursor:pointer;
+            box-shadow: 0 6px 14px rgba(139,92,246,.3);
+        }
+        .btn:active{transform:translateY(1px)}
+        .canvas{
+            width:100%;
+            aspect-ratio: 3/2;
+            background: linear-gradient(#ffffffaa, #ffffffaa), radial-gradient(900px 500px at 50% 100%, #e3ffe8 0%, #ffffff 50%, #ffffff00 70%);
+            border:1px solid #eadcff;
+            border-radius:24px;
+            display:grid;
+            place-items:center;
+            overflow:hidden;
+            position:relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,.06);
+        }
+        /* Subtle floating pollen/sparkles */
+        .sparkle{
+        position:absolute; inset:0; pointer-events:none;
+        background:
+            radial-gradient(3px 3px at 10% 80%, #fff8, #fff0),
+            radial-gradient(3px 3px at 80% 20%, #fff8, #fff0),
+            radial-gradient(2px 2px at 30% 60%, #fff8, #fff0),
+            radial-gradient(2px 2px at 70% 40%, #fff8, #fff0);
+        animation: twinkle 6s linear infinite;
+        }
+        @keyframes twinkle{to{transform:translateY(-12px)}}
+        svg{width:min(720px, 88vw); height:auto; overflow:visible}
+        /* gentle sway */
+        .sway { transform-origin: 50% 100%; animation: sway 6s ease-in-out infinite; }
+        .sway2{ transform-origin: 50% 100%; animation: sway 7.2s ease-in-out infinite .4s; }
+        .sway3{ transform-origin: 50% 100%; animation: sway 5.6s ease-in-out infinite .8s; }
+        @keyframes sway{
+            0%,100%{ transform: rotate(0deg) }
+            50%{ transform: rotate(-2deg) }
+        }
+        .credit{font-size:.8rem;opacity:.55}
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <header class="header" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+            <div class="msg" id="message">Loading bouquet message…</div>
+            <div class="sub">Take time to <code>read this</code> messages!</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn" id="next">Next</button>
+        </header>
+        <section class="canvas" role="img" aria-label="A bouquet of tulips tied with a ribbon">
+            <div class="sparkle"></div>
+            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenM1dDB5YzZ2OWN6dWVqb20xcnFvYm93OWY3cmg0Z2NjNzZ1ZXUyaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/n3KZaXLYLuyNSHEvbm/giphy.gif" 
+                alt="A beautiful animated bouquet of tulips"
+                style="max-width: 100%; height: auto; border-radius: 16px; object-fit: cover;">
+        </section>
+    <p class="credit">From yours truly <code>:</code> Zy</p>
+    </main>
+    <script>
+    const messages = [
+        "Hi Ate Amy! 🌷",
+        "Here's a bouquet for you",
+        "Just a little something to brighten your day",
+        "I hope you maging okay ka rin sa silent battles mo",
+        "Kaya mo yan! laban lang!"
+    ];
+    const rotationMs = 3000; // time per message
+    const messageEl = document.getElementById('message');
+    const nextBtn = document.getElementById('next');
+    let i = 0, timerId = null;
+    function show(idx){
+        messageEl.textContent = messages[idx % messages.length];
+    }
+    function next(){
+        i = (i + 1) % messages.length;
+        show(i);
+        resetTimer();
+    }
+    function resetTimer(){
+        if(timerId) clearInterval(timerId);
+        timerId = setInterval(()=>{ next(); }, rotationMs);
+    }
+        // Init
+        show(i);
+        resetTimer();
+        nextBtn.addEventListener('click', next);
+        // Pause rotation when user hovers the header (optional UX nicety)
+        const header = document.querySelector('.header');
+        header.addEventListener('mouseenter', ()=> timerId && clearInterval(timerId));
+        header.addEventListener('mouseleave', resetTimer);
+    </script>
+</body>
+</html>
